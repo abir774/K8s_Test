@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-application
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hello-application  # Ensure this matches the template label
+  template:
+    metadata:
+      labels:
+        app: hello-application  # Ensure consistency with the selector
+    spec:
+      containers:
+      - name: hello-application
+        image: abir369/hello_application:latest
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 3000
+          initialDelaySeconds: 20
+          periodSeconds: 1   

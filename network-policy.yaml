@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: restrict-access-to-hello-app
+  namespace: default  
+spec:
+  podSelector:
+    matchLabels:
+      app: hello-application  
+  ingress:
+  - from:
+    # Allow traffic from pods with a specific label
+    - podSelector:
+        matchLabels:
+          access: allowed
+    # Allow traffic from a specific namespace
+    - namespaceSelector:
+        matchLabels:
+          purpose: trusted
+    ports:
+    - protocol: TCP
+      port: 3000  # Port exposed by the application
